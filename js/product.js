@@ -1,20 +1,17 @@
-/**
- * Representation of the format of a product
- */
+//Retrieving all products
 class Products {
   constructor(jsonProducts) {
     jsonProducts && Object.assign(this, jsonProducts)
   }
 }
 
-/**
- * Retrieving the url id parameter
- */
+//Retrieving the url id parameter
 function getProductId() {
   const urlParams = new URLSearchParams(location.search);
   return urlParams.get("id");
 }
 const productId = getProductId()
+
 
 /**
  *
@@ -24,9 +21,7 @@ let urlImg
 let altImg
 let showName
 
-/**
- *Create html for display product chosen
- */
+//Creating html for display product chosen
 fetch(`http://localhost:3000/api/products/${productId}`) 
   .then((response) => response.json())
   .then((res) => fillData(res))
@@ -88,8 +83,7 @@ button.addEventListener("click", () => {
   const quantity = document.querySelector("#quantity").value
   if (color == null || color === "" || quantity == null || quantity == 0) {
     alert("Please select a color and quantity")
-    //
-    return
+    return button
   }
   
   // Variable with all values needed
@@ -106,8 +100,7 @@ button.addEventListener("click", () => {
   let products = JSON.parse(localStorage.getItem("product"))
   products = [];
   products.push(storage)
-  localStorage.setItem("product", JSON.stringify(storage))
-  console.log(products)
+  localStorage.setItem(productId, JSON.stringify(storage))
   // window.location.href to send us to url cart when "click" on button
   window.location.href = "cart.html"
 })

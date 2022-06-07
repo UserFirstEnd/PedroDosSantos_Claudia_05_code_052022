@@ -14,6 +14,7 @@ function getProductsAdded() {
         const addedProducts = JSON.parse(addedProduct)
         cart.push(addedProducts)
     }
+    console.log(cart)
     return cart
 }
 //Function elements
@@ -102,6 +103,12 @@ function displayProduct(addedProducts) {
         const removeItemColorsFromCache = `${addedProducts.colors}`
         localStorage.removeItem(removeItemIdFromCache, removeItemColorsFromCache)
 
+        //If a product is deleted, take him out of the localStorage
+        function takeProductFromStorage(key) {
+            localStorage.removeItem(key);
+        };
+        takeProductFromStorage("product");
+
         // reload page with updated data
         location.reload();
     })
@@ -145,10 +152,11 @@ function displayProduct(addedProducts) {
     }
 }
 
-// form contact
+// FORM CONTACT //////////////////////////////////////////////////////////
 const sendConfirmation = document.querySelector("#order");
-
 // send confirmation
+let addedProducts = products = [];
+
 sendConfirmation.addEventListener("click", (e) => {
     e.preventDefault();
     // get data field on form
@@ -159,7 +167,7 @@ sendConfirmation.addEventListener("click", (e) => {
         city: document.querySelector("#city").value,
         email: document.querySelector("#email").value
     }
-   
+
     // functions to check data field on form
     function checkFirstName() {
         const firstName = contact.firstName;
@@ -206,6 +214,7 @@ sendConfirmation.addEventListener("click", (e) => {
             return false
         };
     }
+
     // if data form invalid, don't send data to localStorage
     if (checkFirstName(), checkLastName(), checkCity(), checkEmail(), checkAddress()) {
         // data on cache
@@ -213,6 +222,7 @@ sendConfirmation.addEventListener("click", (e) => {
     } else {
         alert("Invalid input. Please, verify !");
     }
+
     // send products added + data form on storage
     let products = [];
     for (o = 0; o < cart.length; o++) {
@@ -232,7 +242,7 @@ sendConfirmation.addEventListener("click", (e) => {
 
         },
     });
-    console.log(confirmation)
+    console.log(confirmation);
     confirmation.then(async (response) => {
         try {
             console.log(response);
@@ -241,14 +251,15 @@ sendConfirmation.addEventListener("click", (e) => {
             console.log(field);
             if (response.ok) {
                 localStorage.setItem("orderId", field.orderId);
-                window.location.href = "\confirmation.html";
+                //window.location.href = "\confirmation.html";
             } else {
                 alert("Erreur : Problème serveur.");
             }
         } catch (e) {
             console.log(e);
         }
-    })
+    });
+    console.log(sendDataConfirmation)
 });
 
 
