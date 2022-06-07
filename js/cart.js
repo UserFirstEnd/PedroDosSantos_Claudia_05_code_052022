@@ -214,9 +214,6 @@ sendConfirmation.addEventListener("click", (e) => {
         alert("Invalid input. Please, verify !");
     }
     // send products added + data form on storage
-    
-    //const products = ["107fb5b75607497b96722bda5b504926"]
-
     let products = [];
     for (o = 0; o < cart.length; o++) {
         let productsId = cart[o].id;
@@ -244,7 +241,7 @@ sendConfirmation.addEventListener("click", (e) => {
             console.log(field);
             if (response.ok) {
                 localStorage.setItem("orderId", field.orderId);
-                window.location.assign('confirmation.html');
+                window.location.href = "\confirmation.html";
             } else {
                 alert("Erreur : Problème serveur.");
             }
