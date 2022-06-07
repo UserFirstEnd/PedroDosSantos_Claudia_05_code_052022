@@ -83,7 +83,7 @@ function showColors(colors) {
 
 //addEvent to dinamic button
 const button = document.querySelector("#addToCart") 
-button.addEventListener("click", (e) => {
+button.addEventListener("click", () => {
   const color = document.querySelector("#colors").value
   const quantity = document.querySelector("#quantity").value
   if (color == null || color === "" || quantity == null || quantity == 0) {
@@ -92,8 +92,8 @@ button.addEventListener("click", (e) => {
     return
   }
   
-  // Variable with all keys needed
-  const storage = {
+  // Variable with all values needed
+  let storage = {
     id: productId,
     name: showName,
     price: takePrice,
@@ -102,10 +102,12 @@ button.addEventListener("click", (e) => {
     imageUrl: urlImg,
     altTxt: altImg
   }
-
   //localStorage / cache with all keys
-  localStorage.setItem(productId, JSON.stringify(storage))
-
+  let products = JSON.parse(localStorage.getItem("product"))
+  products = [];
+  products.push(storage)
+  localStorage.setItem("product", JSON.stringify(storage))
+  console.log(products)
   // window.location.href to send us to url cart when "click" on button
   window.location.href = "cart.html"
 })

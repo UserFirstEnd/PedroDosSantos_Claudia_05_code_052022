@@ -16,7 +16,6 @@ function getProductsAdded() {
     }
     return cart
 }
-
 //Function elements
 function displayProduct(addedProducts) {
 
@@ -153,16 +152,17 @@ const sendConfirmation = document.querySelector("#order");
 sendConfirmation.addEventListener("click", (e) => {
     e.preventDefault();
     // get data field on form
-    const dataForm = {
+    const contact = {
         firstName: document.querySelector("#firstName").value,
         lastName: document.querySelector("#lastName").value,
         address: document.querySelector("#address").value,
         city: document.querySelector("#city").value,
         email: document.querySelector("#email").value
     }
+   
     // functions to check data field on form
     function checkFirstName() {
-        const firstName = dataForm.firstName;
+        const firstName = contact.firstName;
         if (/^[A-Za-z]{3,25}$/.test(firstName)) {
             return true
         } else {
@@ -171,7 +171,7 @@ sendConfirmation.addEventListener("click", (e) => {
         };
     }
     function checkLastName() {
-        const lastName = dataForm.lastName;
+        const lastName = contact.lastName;
         if (/^[A-Za-z]{3,25}$/.test(lastName)) {
             return true
         } else {
@@ -180,7 +180,7 @@ sendConfirmation.addEventListener("click", (e) => {
         };
     }
     function checkCity() {
-        const city = dataForm.city;
+        const city = contact.city;
         if (/^[A-Za-z]{3,25}$/.test(city)) {
             return true
         } else {
@@ -189,8 +189,8 @@ sendConfirmation.addEventListener("click", (e) => {
         };
     }
     function checkAddress() {
-        const address = dataForm.address;
-        if (/^[A-Za-z0-9]{1,40}$/.test(address)) {
+        const address = contact.address;
+        if (/^[a-zA-Z0-9\s,'-]*$/.test(address)) {
             return true
         } else {
             alert("Your ADDRESS must be valid !")
@@ -198,7 +198,7 @@ sendConfirmation.addEventListener("click", (e) => {
         };
     }
     function checkEmail() {
-        const email = dataForm.email;
+        const email = contact.email;
         if (/^[\w-\.]+@([\w-]+\.)+[\w-]{1,8}$/.test(email)) {
             return true
         } else {
@@ -209,17 +209,51 @@ sendConfirmation.addEventListener("click", (e) => {
     // if data form invalid, don't send data to localStorage
     if (checkFirstName(), checkLastName(), checkCity(), checkEmail(), checkAddress()) {
         // data on cache
-        localStorage.setItem("dataForm", JSON.stringify(dataForm));
+        localStorage.setItem("contact", JSON.stringify(contact));
     } else {
-        alert("Invalid input. Please, verify !")
+        alert("Invalid input. Please, verify !");
     }
     // send products added + data form on storage
-    const sendDataConfirmation = {
-        cart,
-        dataForm
+    
+    //const products = ["107fb5b75607497b96722bda5b504926"]
+
+    let products = [];
+    for (o = 0; o < cart.length; o++) {
+        let productsId = cart[o].id;
+        products.push(productsId)
     }
-    console.log(sendDataConfirmation)
+    const sendDataConfirmation = {
+        products,
+        contact,
+    }
+    console.log(contact)
+    const confirmation = fetch('http://localhost:3000/api/products/order', {
+        method: "POST",
+        body: JSON.stringify(sendDataConfirmation),
+        headers: {
+            "Content-Type": "application/json",
+
+        },
+    });
+    console.log(confirmation)
+    confirmation.then(async (response) => {
+        try {
+            console.log(response);
+
+            const field = await response.json();
+            console.log(field);
+            if (response.ok) {
+                localStorage.setItem("orderId", field.orderId);
+                window.location.assign('confirmation.html');
+            } else {
+                alert("Erreur : Problème serveur.");
+            }
+        } catch (e) {
+            console.log(e);
+        }
+    })
 });
+
 
 
 
