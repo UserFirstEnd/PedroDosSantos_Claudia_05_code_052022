@@ -1,6 +1,4 @@
-/**
- * manages the display and interactions of the home page
- */
+//manages the display and interactions of the home page
 fetch("http://localhost:3000/api/products")
     .then(data => data.json())
     .then(jsonListProducts => {

@@ -1,122 +1,126 @@
-const cart = getProductsAdded()
+const cart = getProductsAdded();
 
-cart.forEach((addedProducts) => displayProduct(addedProducts))
+cart.forEach((addedProducts) => displayProduct(addedProducts));
 //Function to show the products added
 function getProductsAdded() {
     // Array for adding products
-    const cart = []
+    const cart = [];
     //Take quantity added from localStorage
-    const productsChosen = localStorage.length
+    const productsChosen = localStorage.length;
     //Add products
     for (let i = 0; i < productsChosen; i++) {
-        const addedProduct = localStorage.getItem(localStorage.key(i))
+        const addedProduct = localStorage.getItem(localStorage.key(i));
+        console.log(i);
         //JSON.parse to create a spreadsheet
-        const addedProducts = JSON.parse(addedProduct)
-        cart.push(addedProducts)
+        const addedProducts = JSON.parse(addedProduct);
+        cart.push(addedProducts);
     }
-    console.log(cart)
+    console.log(cart);
     return cart
 }
-//Function elements
-function displayProduct(addedProducts) {
 
+//STRUCTURING OF HTML ELEMENTS ON CART.HTML////////////////////////////////////////////////////
+//Function with all elements to display elements
+function displayProduct(addedProducts) {
+    
     // create article element
-    const product = document.createElement('article')
-    product.classList.add("cart__item")
-    product.dataset.id = addedProducts.id
-    product.dataset.colors = addedProducts.colors
-    document.querySelector("#cart__items").appendChild(product)
+    const product = document.createElement('article');
+    product.classList.add("cart__item");
+    product.dataset.id = addedProducts.id;
+    product.dataset.colors = addedProducts.colors;
+    document.querySelector("#cart__items").appendChild(product);
 
     // create img element
-    const img = document.createElement("img")
-    img.src = addedProducts.imageUrl
-    img.alt = addedProducts.altTxt
-    const div = document.createElement("div")
-    div.classList.add("cart__item__img")
-    div.appendChild(img)
-    product.appendChild(div)
+    const img = document.createElement("img");
+    img.src = addedProducts.imageUrl;
+    img.alt = addedProducts.altTxt;
+    const div = document.createElement("div");
+    div.classList.add("cart__item__img");
+    div.appendChild(img);
+    product.appendChild(div);
 
     // create content element
-    const content = document.createElement("div")
-    content.classList.add("cart__item__content")
-    document.querySelector("#cart__items").appendChild(content)
-    product.appendChild(content)
+    const content = document.createElement("div");
+    content.classList.add("cart__item__content");
+    document.querySelector("#cart__items").appendChild(content);
+    product.appendChild(content);
 
     // create description element
-    const description = document.createElement("div")
-    description.classList.add("cart__item__content__description")
-    content.appendChild(description)
+    const description = document.createElement("div");
+    description.classList.add("cart__item__content__description");
+    content.appendChild(description);
 
     // create h2 = name element
-    const h2 = document.createElement('h2')
-    description.appendChild(h2)
-    h2.textContent = addedProducts.name
+    const h2 = document.createElement('h2');
+    description.appendChild(h2);
+    h2.textContent = addedProducts.name;
 
     // create p = color element
-    const p = document.createElement('p')
-    description.appendChild(p)
-    p.textContent = addedProducts.colors
+    const p = document.createElement('p');
+    description.appendChild(p);
+    p.textContent = addedProducts.colors;
 
     // create p = quantity element
-    const p2 = document.createElement('p')
-    description.appendChild(p2)
-    p2.textContent = addedProducts.price + ' €'
+    const p2 = document.createElement('p');
+    description.appendChild(p2);
+    p2.textContent = addedProducts.price + ' €';
 
     // create settings element
-    const settings = document.createElement("div")
-    settings.classList.add("cart__item__content__settings")
-    document.querySelector("#cart__items").appendChild(settings)
-    content.appendChild(settings)
+    const settings = document.createElement("div");
+    settings.classList.add("cart__item__content__settings");
+    document.querySelector("#cart__items").appendChild(settings);
+    content.appendChild(settings);
 
     // create settings quantity element
-    const settingsQuantity = document.createElement("div")
-    settingsQuantity.classList.add("cart__item__content__settings__quantity")
-    settings.appendChild(settingsQuantity)
+    const settingsQuantity = document.createElement("div");
+    settingsQuantity.classList.add("cart__item__content__settings__quantity");
+    settings.appendChild(settingsQuantity);
 
     // create p settings quantity element
-    const quantityP = document.createElement('p')
-    settingsQuantity.appendChild(quantityP)
-    quantityP.textContent = "Qté:"
+    const quantityP = document.createElement('p');
+    settingsQuantity.appendChild(quantityP);
+    quantityP.textContent = "Qté:";
 
     // create input settings quantity element
-    const input = document.createElement('input')
-    input.type = "number"
-    input.name = "itemQuantity"
-    input.min = "1"
-    input.max = "100"
-    input.value = addedProducts.quantity
-    settingsQuantity.appendChild(input)
+    const input = document.createElement('input');
+    input.type = "number";
+    input.name = "itemQuantity";
+    input.min = "1";
+    input.max = "100";
+    input.value = addedProducts.quantity;
+    settingsQuantity.appendChild(input);
 
     // create deleteItem element
-    const deleteItem = document.createElement("div")
-    deleteItem.classList.add("cart__item__content__settings__delete")
-    settings.appendChild(deleteItem)
+    const deleteItem = document.createElement("div");
+    deleteItem.classList.add("cart__item__content__settings__delete");
+    settings.appendChild(deleteItem);
 
     // event to delete article HTML and item from storage
     deleteItem.addEventListener("click", (event) => {
         event.preventDefault(quantity, price);
-        const deleteProduct = deleteItem.closest('article')
-        deleteProduct.remove()
+        const deleteProduct = deleteItem.closest('article');
+        deleteProduct.remove();
 
         // delete item from storage
-        const removeItemIdFromCache = `${addedProducts.id}`
-        const removeItemColorsFromCache = `${addedProducts.colors}`
-        localStorage.removeItem(removeItemIdFromCache, removeItemColorsFromCache)
+        const removeItemIdFromCache = `${addedProducts.id}`;
+        const removeItemColorsFromCache = `${addedProducts.colors}`;
+        
+        localStorage.removeItem(removeItemIdFromCache, removeItemColorsFromCache);
 
         //If a product is deleted, take him out of the localStorage
         function takeProductFromStorage(key) {
             localStorage.removeItem(key);
         };
-        takeProductFromStorage("product");
+        takeProductFromStorage();
 
         // reload page with updated data
         location.reload();
     })
 
     // create deleteItem p element
-    const deleteItemP = document.createElement('p')
-    deleteItem.appendChild(deleteItemP)
-    deleteItemP.textContent = "Supprimer"
+    const deleteItemP = document.createElement('p');
+    deleteItem.appendChild(deleteItemP);
+    deleteItemP.textContent = "Supprimer";
 
     // create functions to display new quantity and price added by the cart page (input)
     price()
@@ -124,31 +128,31 @@ function displayProduct(addedProducts) {
 
     function quantity() {
         // create totalQuantity element + calculation
-        const startQuantity = document.querySelector("#totalQuantity")
-        const quantityProducts = cart.reduce((quantityProducts, addedProducts) => quantityProducts + addedProducts.quantity, 0)
-        startQuantity.textContent = quantityProducts
+        const startQuantity = document.querySelector("#totalQuantity");
+        const quantityProducts = cart.reduce((quantityProducts, addedProducts) => quantityProducts + addedProducts.quantity, 0);
+        startQuantity.textContent = quantityProducts;
     }
 
     function price() {
         // create totalPrice element + calculation
-        const startPrice = document.querySelector("#totalPrice")
-        const totalPriceQty = cart.reduce((totalPriceQty, addedProducts) => totalPriceQty + addedProducts.price * addedProducts.quantity, 0)
-        startPrice.textContent = totalPriceQty
+        const startPrice = document.querySelector("#totalPrice");
+        const totalPriceQty = cart.reduce((totalPriceQty, addedProducts) => totalPriceQty + addedProducts.price * addedProducts.quantity, 0);
+        startPrice.textContent = totalPriceQty;
     }
 
     // event to change quantity
-    input.addEventListener("input", () => updateGetProductsAdded(addedProducts.id, input.value))
+    input.addEventListener("input", () => updateGetProductsAdded(addedProducts.id, input.value));
 
     // function to update quantity
     function updateGetProductsAdded(id, updatedQuantity) {
-        const updateCart = cart.find((addedProducts) => addedProducts.id === id)
-        updateCart.quantity = Number(updatedQuantity)
-        price()
-        quantity()
+        const updateCart = cart.find((addedProducts) => addedProducts.id === id);
+        updateCart.quantity = Number(updatedQuantity);
+        price();
+        quantity();
 
         // function to change cache
-        const newLocalStorage = JSON.stringify(addedProducts)
-        localStorage.setItem(addedProducts.id, newLocalStorage)
+        const newLocalStorage = JSON.stringify(addedProducts);
+        localStorage.setItem(addedProducts.id, newLocalStorage);
     }
 }
 
@@ -174,7 +178,7 @@ sendConfirmation.addEventListener("click", (e) => {
         if (/^[A-Za-z]{3,25}$/.test(firstName)) {
             return true
         } else {
-            alert("Your FIRST NAME must not contain numbers and/or symbols,\nnor exceed 25 characters max and 3 characters min !")
+            alert("Votre PRENOM ne doit pas contenir de chiffres et/ou de symboles,\ni dépasser 25 caractères max et 3 caractères min !")
             return false
         };
     }
@@ -183,7 +187,7 @@ sendConfirmation.addEventListener("click", (e) => {
         if (/^[A-Za-z]{3,25}$/.test(lastName)) {
             return true
         } else {
-            alert("Your LAST NAME must not contain numbers and/or symbols,\nnor exceed 25 characters max and 3 characters min !")
+            alert("Votre NOM ne doit pas contenir de chiffres et/ou de symboles,\ni dépasser 25 caractères max et 3 caractères min !")
             return false
         };
     }
@@ -192,7 +196,7 @@ sendConfirmation.addEventListener("click", (e) => {
         if (/^[A-Za-z]{3,25}$/.test(city)) {
             return true
         } else {
-            alert("Your CITY must not contain numbers and/or symbols,\nnor exceed 25 characters max and 3 characters min !")
+            alert("Votre VILLE ne doit pas contenir de chiffres et/ou de symboles,\ne pas dépasser 25 caractères max et 3 caractères min !")
             return false
         };
     }
@@ -201,7 +205,7 @@ sendConfirmation.addEventListener("click", (e) => {
         if (/^[a-zA-Z0-9\s,'-]*$/.test(address)) {
             return true
         } else {
-            alert("Your ADDRESS must be valid !")
+            alert("Votre ADRESSE doit être valide !")
             return false
         };
     }
@@ -210,7 +214,7 @@ sendConfirmation.addEventListener("click", (e) => {
         if (/^[\w-\.]+@([\w-]+\.)+[\w-]{1,8}$/.test(email)) {
             return true
         } else {
-            alert("Your EMAIL must be valid !")
+            alert("Votre EMAIL doit être valide !")
             return false
         };
     }
@@ -220,15 +224,10 @@ sendConfirmation.addEventListener("click", (e) => {
         // data on cache
         localStorage.setItem("contact", JSON.stringify(contact));
     } else {
-        alert("Invalid input. Please, verify !");
+        alert("Entrée invalide. Vérifiez s'il vous plaît !");
     }
-
-    // send products added + data form on storage
-    let products = [];
-    for (o = 0; o < cart.length; o++) {
-        let productsId = cart[o].id;
-        products.push(productsId)
-    }
+    console.log(products);
+    // define the contact object and the products array
     const sendDataConfirmation = {
         products,
         contact,
@@ -251,7 +250,7 @@ sendConfirmation.addEventListener("click", (e) => {
             console.log(field);
             if (response.ok) {
                 localStorage.setItem("orderId", field.orderId);
-                //window.location.href = "\confirmation.html";
+                window.location.href = "\confirmation.html";
             } else {
                 alert("Erreur : Problème serveur.");
             }
@@ -259,6 +258,11 @@ sendConfirmation.addEventListener("click", (e) => {
             console.log(e);
         }
     });
+    //Do not keep on localStorage the contact
+    function takeContactFromStorage(key) {
+        localStorage.removeItem(key);
+    };
+    takeContactFromStorage("contact");
     console.log(sendDataConfirmation)
 });
 
