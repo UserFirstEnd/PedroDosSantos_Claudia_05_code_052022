@@ -1,10 +1,3 @@
-//Retrieving all products
-class Products {
-  constructor(jsonProducts) {
-    jsonProducts && Object.assign(this, jsonProducts);
-  }
-}
-
 //location.search to retrieve the url id parameter
 function getProductId() {
   const urlParams = new URLSearchParams(location.search);
@@ -63,9 +56,7 @@ function fillData(product) {
     const quantity = document.querySelector("#quantity").value;
     if (color == null || color === "" || quantity == null || quantity == 0) {
       alert("Please select a color and quantity");
-      /**
-       * 
-       */
+      //
       return
     }
     let productsAdded = JSON.parse(localStorage.getItem("id"))
@@ -77,7 +68,6 @@ function fillData(product) {
       price: price,
       name: name
     }
-    console.log(color)
     const managesSeveralColors = Object.assign({}, product, {
       colors: `${select.value}`,
       quantity: 1,

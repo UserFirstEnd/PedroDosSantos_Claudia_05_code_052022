@@ -3,6 +3,8 @@ const cart = getProductsAdded();
 cart.forEach((addedProducts) => displayProduct(addedProducts));
 //Function to show the products added
 function getProductsAdded() {
+    // recup prod api///////////////////////////////////////////////variable compar/ filter.
+    // const tab1 = [1, 2, 3, 4, 5] const tab1 = [1, 2, 3] const tab2 = [3, 5, 1] const tab3 = [] / for(let i = 0; i < tab1.lenght; i++){if(tab1[i]) == }
     // Array for adding products
     const cart = [];
     //Take quantity added from localStorage
@@ -15,7 +17,6 @@ function getProductsAdded() {
         const addedProducts = JSON.parse(addedProduct);
         cart.push(addedProducts);
     }
-    console.log(cart);
     return cart
 }
 
@@ -226,7 +227,6 @@ sendConfirmation.addEventListener("click", (e) => {
     } else {
         alert("Entrée invalide. Vérifiez s'il vous plaît !");
     }
-    console.log(products);
     // define the contact object and the products array
     const sendDataConfirmation = {
         products,
@@ -244,8 +244,6 @@ sendConfirmation.addEventListener("click", (e) => {
     console.log(confirmation);
     confirmation.then(async (response) => {
         try {
-            console.log(response);
-
             const field = await response.json();
             console.log(field);
             if (response.ok) {
@@ -263,7 +261,6 @@ sendConfirmation.addEventListener("click", (e) => {
         localStorage.removeItem(key);
     };
     takeContactFromStorage("contact");
-    console.log(sendDataConfirmation)
 });
 
 
