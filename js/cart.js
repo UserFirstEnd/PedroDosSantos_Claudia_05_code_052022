@@ -57,7 +57,7 @@ function displayProduct(addedProducts) {
     // Create p = color element
     const p = document.createElement('p');
     description.appendChild(p);
-    p.textContent = addedProducts.colors;
+    p.textContent = addedProducts[0].colors;
 
     // Create p = quantity element
     const p2 = document.createElement('p');
@@ -153,7 +153,7 @@ function displayProduct(addedProducts) {
 
         // Function to change cache
         const newLocalStorage = JSON.stringify(addedProducts);
-        localStorage.setItem(addedProducts.id, newLocalStorage);
+        localStorage.setItem(addedProducts[0].id, newLocalStorage);
     }
 }
 

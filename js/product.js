@@ -50,7 +50,7 @@ function fillData(product) {
   // 
   let products = {
     id: id,
-    colors: color,
+    colors: color.value,
     quantity: Number(quantity),
     imageUrl: imageUrl,
     price: price,
@@ -73,14 +73,11 @@ function getBasket() {
 
 // 
 function addBasket(product) {
-  // AddEvent to dynamic button
+  // 
   const button = document.querySelector("#addToCart");
   button.addEventListener("click", (e) => {
     e.preventDefault();
     const color = document.querySelector("#colors").value;
-    for (let i in color) {//revoir
-      console.log(color[i])
-    }
     const quantity = document.querySelector("#quantity").value;
     if (color == null || color === "" || quantity == null || quantity == 0) {
       alert("Please select a color and quantity");
@@ -88,27 +85,30 @@ function addBasket(product) {
       return
     }
 
-    console.log(product.color)
+    // 
+    
     let products = getBasket();
+    const managesSeveralColors = Object.assign({}, product, {// revoir
+      colors: color,// revoir
+      quantity: 1,
+    });
+    
     let foundProduct = products.find(p => p.id == product.id)
     if (foundProduct != undefined) {
       foundProduct.quantity++;
       console.log(foundProduct.quantity++)
-    } else {
-      product.quantity = Number(quantity);
+      products.push(managesSeveralColors);
+    } else if ((p => p.id == product.id != color)) {
       console.log(Number(quantity))
-      products.push(product);
+      products.push(managesSeveralColors);
     }
     console.log(products)
     localStorage.setItem(id, JSON.stringify(products));
+    // window.location.href to send us to url cart when "click" on button
+    //window.location.href = "cart.html"
   });
 }
 
-  //localStorage / cache with all keys
-  //localStorage.setItem(productId, JSON.stringify(storage));
-
-  // window.location.href to send us to url cart when "click" on button
-  //window.location.href = "cart.html"
 
 
 
