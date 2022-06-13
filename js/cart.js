@@ -1,10 +1,8 @@
 const cart = getProductsAdded();
 
 cart.forEach((addedProducts) => displayProduct(addedProducts));
-//Function to show the products added
+//Function to get the products added to localStorage by key (lenght)
 function getProductsAdded() {
-    // recup prod api///////////////////////////////////////////////variable compar/ filter.
-    // const tab1 = [1, 2, 3, 4, 5] const tab1 = [1, 2, 3] const tab2 = [3, 5, 1] const tab3 = [] / for(let i = 0; i < tab1.lenght; i++){if(tab1[i]) == }
     // Array for adding products
     const cart = [];
     //Take quantity added from localStorage
@@ -12,7 +10,6 @@ function getProductsAdded() {
     //Add products
     for (let i = 0; i < productsChosen; i++) {
         const addedProduct = localStorage.getItem(localStorage.key(i));
-        console.log(i);
         //JSON.parse to create a spreadsheet
         const addedProducts = JSON.parse(addedProduct);
         cart.push(addedProducts);
@@ -20,138 +17,141 @@ function getProductsAdded() {
     return cart
 }
 
+console.log(cart)
+
 //STRUCTURING OF HTML ELEMENTS ON CART.HTML////////////////////////////////////////////////////
-//Function with all elements to display elements
+//Function with all elements to display
 function displayProduct(addedProducts) {
-    
-    // create article element
+    // Create article element
     const product = document.createElement('article');
     product.classList.add("cart__item");
-    product.dataset.id = addedProducts.id;
-    product.dataset.colors = addedProducts.colors;
+    product.dataset.id = addedProducts[0].id;
+    product.dataset.colors = addedProducts[0].colors;
     document.querySelector("#cart__items").appendChild(product);
 
-    // create img element
+    // Create img element
     const img = document.createElement("img");
-    img.src = addedProducts.imageUrl;
-    img.alt = addedProducts.altTxt;
+    img.src = addedProducts[0].imageUrl;
+    img.alt = addedProducts[0].altTxt;
     const div = document.createElement("div");
     div.classList.add("cart__item__img");
     div.appendChild(img);
     product.appendChild(div);
 
-    // create content element
+    // Create content element
     const content = document.createElement("div");
     content.classList.add("cart__item__content");
     document.querySelector("#cart__items").appendChild(content);
     product.appendChild(content);
 
-    // create description element
+    // Create description element
     const description = document.createElement("div");
     description.classList.add("cart__item__content__description");
     content.appendChild(description);
 
-    // create h2 = name element
+    // Create h2 = name element
     const h2 = document.createElement('h2');
     description.appendChild(h2);
-    h2.textContent = addedProducts.name;
+    h2.textContent = addedProducts[0].name;
 
-    // create p = color element
+    // Create p = color element
     const p = document.createElement('p');
     description.appendChild(p);
     p.textContent = addedProducts.colors;
 
-    // create p = quantity element
+    // Create p = quantity element
     const p2 = document.createElement('p');
     description.appendChild(p2);
-    p2.textContent = addedProducts.price + ' €';
+    p2.textContent = addedProducts[0].price + ' €';
 
-    // create settings element
+    // Create settings element
     const settings = document.createElement("div");
     settings.classList.add("cart__item__content__settings");
     document.querySelector("#cart__items").appendChild(settings);
     content.appendChild(settings);
 
-    // create settings quantity element
+    // Create settings quantity element
     const settingsQuantity = document.createElement("div");
     settingsQuantity.classList.add("cart__item__content__settings__quantity");
     settings.appendChild(settingsQuantity);
 
-    // create p settings quantity element
+    // Create p settings quantity element
     const quantityP = document.createElement('p');
     settingsQuantity.appendChild(quantityP);
     quantityP.textContent = "Qté:";
 
-    // create input settings quantity element
+    // Create input settings quantity element
     const input = document.createElement('input');
     input.type = "number";
     input.name = "itemQuantity";
     input.min = "1";
     input.max = "100";
-    input.value = addedProducts.quantity;
+    input.value = addedProducts[0].quantity;
     settingsQuantity.appendChild(input);
 
-    // create deleteItem element
+    // Create deleteItem element
     const deleteItem = document.createElement("div");
     deleteItem.classList.add("cart__item__content__settings__delete");
     settings.appendChild(deleteItem);
 
-    // event to delete article HTML and item from storage
+    // Event to delete article HTML and item from storage
     deleteItem.addEventListener("click", (event) => {
         event.preventDefault(quantity, price);
         const deleteProduct = deleteItem.closest('article');
         deleteProduct.remove();
 
-        // delete item from storage
-        const removeItemIdFromCache = `${addedProducts.id}`;
-        const removeItemColorsFromCache = `${addedProducts.colors}`;
-        
+        // Delete item from storage
+        const removeItemIdFromCache = `${addedProducts[0].id}`;
+        const removeItemColorsFromCache = `${addedProducts[0].colors}`;
+
         localStorage.removeItem(removeItemIdFromCache, removeItemColorsFromCache);
 
-        //If a product is deleted, take him out of the localStorage
+        // If a product is deleted, take him out of the localStorage
         function takeProductFromStorage(key) {
             localStorage.removeItem(key);
         };
         takeProductFromStorage();
 
-        // reload page with updated data
+        // Reload page with updated data
         location.reload();
     })
 
-    // create deleteItem p element
+    // Create deleteItem p element
     const deleteItemP = document.createElement('p');
     deleteItem.appendChild(deleteItemP);
     deleteItemP.textContent = "Supprimer";
 
-    // create functions to display new quantity and price added by the cart page (input)
+    // Create functions to display new quantity and price added by the cart page (input)
     price()
     quantity()
 
     function quantity() {
-        // create totalQuantity element + calculation
+        // Create totalQuantity element + calculation
         const startQuantity = document.querySelector("#totalQuantity");
-        const quantityProducts = cart.reduce((quantityProducts, addedProducts) => quantityProducts + addedProducts.quantity, 0);
+        const quantityProducts = cart.reduce((quantityProducts, addedProducts) => quantityProducts + addedProducts[0].quantity, 0);
         startQuantity.textContent = quantityProducts;
     }
 
     function price() {
-        // create totalPrice element + calculation
+        // Create totalPrice element + calculation
         const startPrice = document.querySelector("#totalPrice");
-        const totalPriceQty = cart.reduce((totalPriceQty, addedProducts) => totalPriceQty + addedProducts.price * addedProducts.quantity, 0);
+        const totalPriceQty = cart.reduce((totalPriceQty, addedProducts) => totalPriceQty + addedProducts[0].price * addedProducts[0].quantity, 0);
         startPrice.textContent = totalPriceQty;
     }
 
-    // event to change quantity
+    // Event to change quantity
     input.addEventListener("input", () => updateGetProductsAdded(addedProducts.id, input.value));
 
-    // function to update quantity
+    // Function to update quantity
     function updateGetProductsAdded(id, updatedQuantity) {
         const updateCart = cart.find((addedProducts) => addedProducts.id === id);
-        updateCart.quantity = Number(updatedQuantity);
+        updateCart[0].quantity = Number(updatedQuantity);
+        console.log(updatedQuantity)
+        console.log(updateCart)
         price();
         quantity();
 
-        // function to change cache
+        // Function to change cache
         const newLocalStorage = JSON.stringify(addedProducts);
         localStorage.setItem(addedProducts.id, newLocalStorage);
     }
@@ -159,12 +159,12 @@ function displayProduct(addedProducts) {
 
 // FORM CONTACT //////////////////////////////////////////////////////////
 const sendConfirmation = document.querySelector("#order");
-// send confirmation
+// Send confirmation
 let addedProducts = products = [];
 
 sendConfirmation.addEventListener("click", (e) => {
     e.preventDefault();
-    // get data field on form
+    // Get data field on form
     const contact = {
         firstName: document.querySelector("#firstName").value,
         lastName: document.querySelector("#lastName").value,
@@ -173,7 +173,7 @@ sendConfirmation.addEventListener("click", (e) => {
         email: document.querySelector("#email").value
     }
 
-    // functions to check data field on form
+    //Functions to check data field on form with regEx
     function checkFirstName() {
         const firstName = contact.firstName;
         if (/^[A-Za-z]{3,25}$/.test(firstName)) {
@@ -220,19 +220,20 @@ sendConfirmation.addEventListener("click", (e) => {
         };
     }
 
-    // if data form invalid, don't send data to localStorage
+    // If data form invalid, don't send data to localStorage
     if (checkFirstName(), checkLastName(), checkCity(), checkEmail(), checkAddress()) {
         // data on cache
         localStorage.setItem("contact", JSON.stringify(contact));
     } else {
         alert("Entrée invalide. Vérifiez s'il vous plaît !");
     }
-    // define the contact object and the products array
+    // Define the contact object and the products array
     const sendDataConfirmation = {
         products,
         contact,
     }
     console.log(contact)
+    // Sending products and form contact to order page
     const confirmation = fetch('http://localhost:3000/api/products/order', {
         method: "POST",
         body: JSON.stringify(sendDataConfirmation),
