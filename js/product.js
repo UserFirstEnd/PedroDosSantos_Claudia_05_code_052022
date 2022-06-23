@@ -47,65 +47,65 @@ function fillData(product) {
     select.appendChild(option);
   })
 
-  // 
-  let products = {
-    id: id,
-    colors: color.value,
-    quantity: Number(quantity),
-    imageUrl: imageUrl,
-    price: price,
-    name: name
-  }
-  console.log(product.color)
-  console.log(color)
-  addBasket(products)
+  addProducts(product)
 }
 
-// 
-function getBasket() {
-  let products = localStorage.getItem(id);
-  if (products == null) {
-    return [];
-  } else {
-    return JSON.parse(products);
-  }
-}
-
-// 
-function addBasket(product) {
-  // 
+// Function to send chosen products to localStorage
+function addProducts(product) {
+  console.log("bonjour")
   const button = document.querySelector("#addToCart");
   button.addEventListener("click", (e) => {
     e.preventDefault();
-    const color = document.querySelector("#colors").value;
+    const colors = document.querySelector("#colors").value;
     const quantity = document.querySelector("#quantity").value;
-    if (color == null || color === "" || quantity == null || quantity == 0) {
+    if (colors == null || colors === "" || quantity == null || quantity == 0) {
       alert("Please select a color and quantity");
       //
       return
     }
 
-    // 
-    
-    let products = getBasket();
-    const managesSeveralColors = Object.assign({}, product, {// revoir
-      colors: color,// revoir
-      quantity: 1,
+    //
+    const managesSeveralColors = Object.assign({}, product, {
+      colors: colors,
+      quantity: Number(quantity),
     });
-    
-    let foundProduct = products.find(p => p.id == product.id)
-    if (foundProduct != undefined) {
-      foundProduct.quantity++;
-      console.log(foundProduct.quantity++)
-      products.push(managesSeveralColors);
-    } else if ((p => p.id == product.id != color)) {
-      console.log(Number(quantity))
-      products.push(managesSeveralColors);
+    console.log(managesSeveralColors)
+
+    //
+    let productsAdded = JSON.parse(localStorage.getItem("product"));
+    //
+    if (productsAdded == null) {
+      productsAdded = [];
+      productsAdded.push(managesSeveralColors);
+      localStorage.setItem("product", JSON.stringify(productsAdded));
+    } else if (productsAdded != null) {
+      for (i = 0; i < productsAdded.length; i++) {
+        if (productsAdded[i]._id == product._id && productsAdded[i].colors == colors) {
+          return (
+            productsAdded[i].quantity += Number(quantity),
+            localStorage.setItem("product", JSON.stringify(productsAdded)),
+            productsAdded = JSON.parse(localStorage.getItem("product")),
+            // window.location.href to send us to url cart when "click" on button
+            window.location.href = "cart.html"
+          );
+        }
+      }
+      for (i = 0; i < productsAdded.length; i++) {
+        if (productsAdded[i]._id == product._id && productsAdded[i].colors != colors || productsAdded[i]._id != product._id) {
+          return (
+            productsAdded.push(managesSeveralColors),
+            localStorage.setItem("product", JSON.stringify(productsAdded)),
+            (productsAdded = JSON.parse(localStorage.getItem("product"))),
+            // window.location.href to send us to url cart when "click" on button
+            window.location.href = "cart.html"
+          );
+        }
+      }
     }
-    console.log(products)
-    localStorage.setItem(id, JSON.stringify(products));
+
+    return productsAdded = JSON.parse(localStorage.getItem("product")),
     // window.location.href to send us to url cart when "click" on button
-    //window.location.href = "cart.html"
+    window.location.href = "cart.html"
   });
 }
 

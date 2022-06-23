@@ -1,5 +1,7 @@
 const cart = getProductsAdded();
 
+let someProducts = [];
+
 cart.forEach((addedProducts) => displayProduct(addedProducts));
 //Function to get the products added to localStorage by key (lenght)
 function getProductsAdded() {
@@ -12,27 +14,29 @@ function getProductsAdded() {
         const addedProduct = localStorage.getItem(localStorage.key(i));
         //JSON.parse to create a spreadsheet
         const addedProducts = JSON.parse(addedProduct);
-        cart.push(addedProducts);
+        const allAddedProducts = addedProducts.entries();
+        for (let sameAddedProductId of allAddedProducts) {
+            cart.push(sameAddedProductId);
+        }
     }
     return cart
 }
 
-console.log(cart)
-
 //STRUCTURING OF HTML ELEMENTS ON CART.HTML////////////////////////////////////////////////////
 //Function with all elements to display
 function displayProduct(addedProducts) {
+
     // Create article element
     const product = document.createElement('article');
     product.classList.add("cart__item");
-    product.dataset.id = addedProducts[0].id;
-    product.dataset.colors = addedProducts[0].colors;
+    product.dataset._id = addedProducts[1]._id;
+    product.dataset.colors = addedProducts[1].colors;
     document.querySelector("#cart__items").appendChild(product);
 
     // Create img element
     const img = document.createElement("img");
-    img.src = addedProducts[0].imageUrl;
-    img.alt = addedProducts[0].altTxt;
+    img.src = addedProducts[1].imageUrl;
+    img.alt = addedProducts[1].altTxt;
     const div = document.createElement("div");
     div.classList.add("cart__item__img");
     div.appendChild(img);
@@ -52,17 +56,17 @@ function displayProduct(addedProducts) {
     // Create h2 = name element
     const h2 = document.createElement('h2');
     description.appendChild(h2);
-    h2.textContent = addedProducts[0].name;
+    h2.textContent = addedProducts[1].name;
 
     // Create p = color element
     const p = document.createElement('p');
     description.appendChild(p);
-    p.textContent = addedProducts[0].colors;
+    p.textContent = addedProducts[1].colors;
 
     // Create p = quantity element
     const p2 = document.createElement('p');
     description.appendChild(p2);
-    p2.textContent = addedProducts[0].price + ' €';
+    p2.textContent = addedProducts[1].price + ' €';
 
     // Create settings element
     const settings = document.createElement("div");
@@ -86,7 +90,9 @@ function displayProduct(addedProducts) {
     input.name = "itemQuantity";
     input.min = "1";
     input.max = "100";
-    input.value = addedProducts[0].quantity;
+    input.value = addedProducts[1].quantity;
+    input.dataset._id = addedProducts[1]._id;
+    input.dataset.colors = addedProducts[1].colors;
     settingsQuantity.appendChild(input);
 
     // Create deleteItem element
@@ -94,67 +100,125 @@ function displayProduct(addedProducts) {
     deleteItem.classList.add("cart__item__content__settings__delete");
     settings.appendChild(deleteItem);
 
-    // Event to delete article HTML and item from storage
-    deleteItem.addEventListener("click", (event) => {
-        event.preventDefault(quantity, price);
-        const deleteProduct = deleteItem.closest('article');
-        deleteProduct.remove();
-
-        // Delete item from storage
-        const removeItemIdFromCache = `${addedProducts[0].id}`;
-        const removeItemColorsFromCache = `${addedProducts[0].colors}`;
-
-        localStorage.removeItem(removeItemIdFromCache, removeItemColorsFromCache);
-
-        // If a product is deleted, take him out of the localStorage
-        function takeProductFromStorage(key) {
-            localStorage.removeItem(key);
-        };
-        takeProductFromStorage();
-
-        // Reload page with updated data
-        location.reload();
-    })
-
     // Create deleteItem p element
     const deleteItemP = document.createElement('p');
     deleteItem.appendChild(deleteItemP);
+    deleteItem.dataset._id = addedProducts[1]._id;
+    deleteItem.dataset.colors = addedProducts[1].colors;
     deleteItemP.textContent = "Supprimer";
 
+    function takeProductFromStorage() {
+        //console.log("je remove");
+        // Event to delete article HTML and item from storage
+        let deleteProducts = document.querySelectorAll(".cart__item__content__settings__delete");
+        //console.log(deleteProducts)
+
+        deleteProducts.forEach((deleteProduct) => {
+            deleteProduct.addEventListener("click", () => {
+                //console.log(deleteProduct)
+                //console.log(deleteProducts)
+
+                let allProductsRemoved = addedProducts.length;
+
+                //console.log(allProductsRemoved);
+
+                if (allProductsRemoved == 1) {
+                    return (
+                        localStorage.removeItem("product"),
+                        console.log("remove tout")
+                    );
+                } else {
+                    someProducts = addedProducts.filter((el) => {
+                        console.log(el)
+                        if (deleteProduct.dataset._id != el._id ||
+                            deleteProduct.dataset.colors != el.colors
+                            //console.log(el._id),
+                            //console.log(el.colors),
+                            //console.log(deleteProduct.dataset._id),
+                            //console.log(deleteProduct.dataset.colors)
+                        ) {
+                            return true;
+                        }
+                    });
+                    console.log(someProducts);
+                    localStorage.setItem("product", JSON.stringify(someProducts));
+                    console.log("remove le prod");
+                }
+            });
+
+        })
+
+
+        // Reload page with updated data
+        //location.reload();
+
+    };
+    takeProductFromStorage();
+
     // Create functions to display new quantity and price added by the cart page (input)
-    price()
-    quantity()
+    price();
+    quantity();
 
     function quantity() {
         // Create totalQuantity element + calculation
         const startQuantity = document.querySelector("#totalQuantity");
-        const quantityProducts = cart.reduce((quantityProducts, addedProducts) => quantityProducts + addedProducts[0].quantity, 0);
+        const quantityProducts = cart.reduce((quantityProducts, addedProducts) => quantityProducts + addedProducts[1].quantity, 0);
         startQuantity.textContent = quantityProducts;
     }
 
     function price() {
         // Create totalPrice element + calculation
         const startPrice = document.querySelector("#totalPrice");
-        const totalPriceQty = cart.reduce((totalPriceQty, addedProducts) => totalPriceQty + addedProducts[0].price * addedProducts[0].quantity, 0);
+        const totalPriceQty = cart.reduce((totalPriceQty, addedProducts) => totalPriceQty + addedProducts[1].price * addedProducts[1].quantity, 0);
         startPrice.textContent = totalPriceQty;
     }
 
+
+    const addQuantityProduct = async (displayProduct) => {
+        await displayProduct;
+        let checkAddedProducts = document.querySelectorAll("article input");
+
+        checkAddedProducts.forEach((updateQuantity) => {
+            updateQuantity.addEventListener("click", () => {
+                console.log(updateQuantity)
+                for (i = 0; i < addedProducts.length; i++) {
+                    //console.log("test le for");
+                    if (addedProducts[i]._id == checkAddedProducts._id && addedProducts[i].colors == updateQuantity.colors) {
+                        //console.log("test le if")
+                        return (
+                            addedProducts[1].quantity = Number(input.value),
+                            console.log(Number(input.value)),
+                            console.log(addedProducts[1].quantity),
+                            localStorage.setItem("product", JSON.stringify(addedProducts[1])),
+                            quantity(),
+                            price()
+                            //console.log("test le retour"))
+                        )
+                    };
+                    //console.log("test le for")
+                };
+            });
+        });
+    };
+
+    addQuantityProduct();
     // Event to change quantity
-    input.addEventListener("input", () => updateGetProductsAdded(addedProducts.id, input.value));
+    //input.addEventListener("input", () => updateGetProductsAdded(addedProducts._id, input.value));
 
     // Function to update quantity
-    function updateGetProductsAdded(id, updatedQuantity) {
-        const updateCart = cart.find((addedProducts) => addedProducts.id === id);
-        updateCart[0].quantity = Number(updatedQuantity);
-        console.log(updatedQuantity)
-        console.log(updateCart)
-        price();
-        quantity();
+    //function updateGetProductsAdded(_id, updatedQuantity) {
+    //const updateCart = cart.find((addedProducts) => addedProducts._id === _id);
+    // updateCart.quantity = Number(updatedQuantity);
+    // console.log(updatedQuantity)
+    // console.log(updateCart)
+    // price();
+    // quantity();
 
-        // Function to change cache
-        const newLocalStorage = JSON.stringify(addedProducts);
-        localStorage.setItem(addedProducts[0].id, newLocalStorage);
-    }
+    // Change cache
+    //const newLocalStorage = JSON.stringify(addedProducts);
+    // localStorage.setItem(addedProducts, newLocalStorage);
+    // console.log(newLocalStorage)
+    //}
 }
 
 // FORM CONTACT //////////////////////////////////////////////////////////
