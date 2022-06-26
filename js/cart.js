@@ -1,42 +1,24 @@
-const cart = getProductsAdded();
-
-let someProducts = [];
+const cart = JSON.parse(localStorage.getItem("product"));
 
 cart.forEach((addedProducts) => displayProduct(addedProducts));
-//Function to get the products added to localStorage by key (lenght)
-function getProductsAdded() {
-    // Array for adding products
-    const cart = [];
-    //Take quantity added from localStorage
-    const productsChosen = localStorage.length;
-    //Add products
-    for (let i = 0; i < productsChosen; i++) {
-        const addedProduct = localStorage.getItem(localStorage.key(i));
-        //JSON.parse to create a spreadsheet
-        const addedProducts = JSON.parse(addedProduct);
-        const allAddedProducts = addedProducts.entries();
-        for (let sameAddedProductId of allAddedProducts) {
-            cart.push(sameAddedProductId);
-        }
-    }
-    return cart
-}
 
+console.log(cart)
 //STRUCTURING OF HTML ELEMENTS ON CART.HTML////////////////////////////////////////////////////
 //Function with all elements to display
 function displayProduct(addedProducts) {
 
+    console.log(addedProducts)
     // Create article element
     const product = document.createElement('article');
     product.classList.add("cart__item");
-    product.dataset._id = addedProducts[1]._id;
-    product.dataset.colors = addedProducts[1].colors;
+    product.dataset._id = addedProducts._id;
+    product.dataset.colors = addedProducts.colors;
     document.querySelector("#cart__items").appendChild(product);
 
     // Create img element
     const img = document.createElement("img");
-    img.src = addedProducts[1].imageUrl;
-    img.alt = addedProducts[1].altTxt;
+    img.src = addedProducts.imageUrl;
+    img.alt = addedProducts.altTxt;
     const div = document.createElement("div");
     div.classList.add("cart__item__img");
     div.appendChild(img);
@@ -56,17 +38,17 @@ function displayProduct(addedProducts) {
     // Create h2 = name element
     const h2 = document.createElement('h2');
     description.appendChild(h2);
-    h2.textContent = addedProducts[1].name;
+    h2.textContent = addedProducts.name;
 
     // Create p = color element
     const p = document.createElement('p');
     description.appendChild(p);
-    p.textContent = addedProducts[1].colors;
+    p.textContent = addedProducts.colors;
 
     // Create p = quantity element
     const p2 = document.createElement('p');
     description.appendChild(p2);
-    p2.textContent = addedProducts[1].price + ' €';
+    p2.textContent = addedProducts.price + ' €';
 
     // Create settings element
     const settings = document.createElement("div");
@@ -90,9 +72,9 @@ function displayProduct(addedProducts) {
     input.name = "itemQuantity";
     input.min = "1";
     input.max = "100";
-    input.value = addedProducts[1].quantity;
-    input.dataset._id = addedProducts[1]._id;
-    input.dataset.colors = addedProducts[1].colors;
+    input.value = addedProducts.quantity;
+    input.dataset._id = addedProducts._id;
+    input.dataset.colors = addedProducts.colors;
     settingsQuantity.appendChild(input);
 
     // Create deleteItem element
@@ -103,123 +85,79 @@ function displayProduct(addedProducts) {
     // Create deleteItem p element
     const deleteItemP = document.createElement('p');
     deleteItem.appendChild(deleteItemP);
-    deleteItem.dataset._id = addedProducts[1]._id;
-    deleteItem.dataset.colors = addedProducts[1].colors;
+    deleteItem.dataset._id = addedProducts._id;
+    deleteItem.dataset.colors = addedProducts.colors;
     deleteItemP.textContent = "Supprimer";
 
-    function takeProductFromStorage() {
-        //console.log("je remove");
-        // Event to delete article HTML and item from storage
-        let deleteProducts = document.querySelectorAll(".cart__item__content__settings__delete");
-        //console.log(deleteProducts)
-
-        deleteProducts.forEach((deleteProduct) => {
-            deleteProduct.addEventListener("click", () => {
-                //console.log(deleteProduct)
-                //console.log(deleteProducts)
-
-                let allProductsRemoved = addedProducts.length;
-
-                //console.log(allProductsRemoved);
-
-                if (allProductsRemoved == 1) {
-                    return (
-                        localStorage.removeItem("product"),
-                        console.log("remove tout")
-                    );
-                } else {
-                    someProducts = addedProducts.filter((el) => {
-                        console.log(el)
-                        if (deleteProduct.dataset._id != el._id ||
-                            deleteProduct.dataset.colors != el.colors
-                            //console.log(el._id),
-                            //console.log(el.colors),
-                            //console.log(deleteProduct.dataset._id),
-                            //console.log(deleteProduct.dataset.colors)
-                        ) {
-                            return true;
-                        }
-                    });
-                    console.log(someProducts);
-                    localStorage.setItem("product", JSON.stringify(someProducts));
-                    console.log("remove le prod");
-                }
-            });
-
-        })
-
-
-        // Reload page with updated data
-        //location.reload();
-
-    };
-    takeProductFromStorage();
-
-    // Create functions to display new quantity and price added by the cart page (input)
     price();
     quantity();
-
-    function quantity() {
-        // Create totalQuantity element + calculation
-        const startQuantity = document.querySelector("#totalQuantity");
-        const quantityProducts = cart.reduce((quantityProducts, addedProducts) => quantityProducts + addedProducts[1].quantity, 0);
-        startQuantity.textContent = quantityProducts;
-    }
-
-    function price() {
-        // Create totalPrice element + calculation
-        const startPrice = document.querySelector("#totalPrice");
-        const totalPriceQty = cart.reduce((totalPriceQty, addedProducts) => totalPriceQty + addedProducts[1].price * addedProducts[1].quantity, 0);
-        startPrice.textContent = totalPriceQty;
-    }
-
-
-    const addQuantityProduct = async (displayProduct) => {
-        await displayProduct;
-        let checkAddedProducts = document.querySelectorAll("article input");
-
-        checkAddedProducts.forEach((updateQuantity) => {
-            updateQuantity.addEventListener("click", () => {
-                console.log(updateQuantity)
-                for (i = 0; i < addedProducts.length; i++) {
-                    //console.log("test le for");
-                    if (addedProducts[i]._id == checkAddedProducts._id && addedProducts[i].colors == updateQuantity.colors) {
-                        //console.log("test le if")
-                        return (
-                            addedProducts[1].quantity = Number(input.value),
-                            console.log(Number(input.value)),
-                            console.log(addedProducts[1].quantity),
-                            localStorage.setItem("product", JSON.stringify(addedProducts[1])),
-                            quantity(),
-                            price()
-                            //console.log("test le retour"))
-                        )
-                    };
-                    //console.log("test le for")
-                };
-            });
-        });
-    };
-
+    takeProductFromStorage();
     addQuantityProduct();
-    // Event to change quantity
-    //input.addEventListener("input", () => updateGetProductsAdded(addedProducts._id, input.value));
-
-    // Function to update quantity
-    //function updateGetProductsAdded(_id, updatedQuantity) {
-    //const updateCart = cart.find((addedProducts) => addedProducts._id === _id);
-    // updateCart.quantity = Number(updatedQuantity);
-    // console.log(updatedQuantity)
-    // console.log(updateCart)
-    // price();
-    // quantity();
-
-    // Change cache
-    //const newLocalStorage = JSON.stringify(addedProducts);
-    // localStorage.setItem(addedProducts, newLocalStorage);
-    // console.log(newLocalStorage)
-    //}
 }
+
+// Functions to display new quantity and price added by the cart page (input)
+function quantity() {
+    // Create totalQuantity element + calculation
+    const startQuantity = document.querySelector("#totalQuantity");
+    const quantityProducts = cart.reduce((quantityProducts, addedProducts) => quantityProducts + addedProducts.quantity, 0);
+    startQuantity.textContent = quantityProducts;
+};
+function price() {
+    // Create totalPrice element + calculation
+    const startPrice = document.querySelector("#totalPrice");
+    const totalPriceQty = cart.reduce((totalPriceQty, addedProducts) => totalPriceQty + addedProducts.price * addedProducts.quantity, 0);
+    startPrice.textContent = totalPriceQty;
+    console.log(totalPriceQty)
+};
+
+//Function to add and remove quantity
+function addQuantityProduct() {
+
+    let checkAddedProducts = document.querySelectorAll("article input");
+
+    //Event to add and remove quantity
+    checkAddedProducts.forEach((updateQuantity) => {
+        updateQuantity.addEventListener("click", () => {
+            for (i = 0; i < cart.length; i++) {
+                //console.log("test le for");
+                if (cart[i]._id == updateQuantity.dataset._id && cart[i].colors == updateQuantity.dataset.colors) {
+                    return (
+                        cart[i].quantity = Number(updateQuantity.value),
+                        localStorage.setItem("product", JSON.stringify(cart)),
+                        quantity(),
+                        price()
+                    );
+                };
+            };
+        });
+    });
+};
+
+// Function to delete article HTML and item from storage
+function takeProductFromStorage() {
+
+    let deleteProducts = document.querySelectorAll(".cart__item__content__settings__delete");
+
+    // Event to delete article HTML and item from storage
+    deleteProducts.forEach((deleteProduct) => {
+        deleteProduct.addEventListener("click", () => {
+            const tagOfTheSelected = deleteProduct.closest('article');
+            tagOfTheSelected.remove();
+
+            let allProductsRemoved = cart.length;
+
+            if (allProductsRemoved == 1) {
+                localStorage.removeItem("product");
+                alert("Votre panier sera vide ! Veuillez sélectionner un produit.");
+                window.location.href = "index.html";
+            } else {
+                let someProducts = cart.filter(el => el._id != deleteProduct.dataset._id || el.colors != deleteProduct.dataset.colors);
+                localStorage.setItem("product", JSON.stringify(someProducts));
+                location.reload();
+            };
+        });
+    })
+};
 
 // FORM CONTACT //////////////////////////////////////////////////////////
 const sendConfirmation = document.querySelector("#order");
@@ -243,7 +181,7 @@ sendConfirmation.addEventListener("click", (e) => {
         if (/^[A-Za-z]{3,25}$/.test(firstName)) {
             return true
         } else {
-            alert("Votre PRENOM ne doit pas contenir de chiffres et/ou de symboles,\ni dépasser 25 caractères max et 3 caractères min !")
+            alert("Votre PRENOM ne doit pas contenir de chiffres et/ou de symboles, ni dépasser 25 caractères max. et 3 caractères min. !")
             return false
         };
     }
@@ -252,7 +190,7 @@ sendConfirmation.addEventListener("click", (e) => {
         if (/^[A-Za-z]{3,25}$/.test(lastName)) {
             return true
         } else {
-            alert("Votre NOM ne doit pas contenir de chiffres et/ou de symboles,\ni dépasser 25 caractères max et 3 caractères min !")
+            alert("Votre NOM ne doit pas contenir de chiffres et/ou de symboles, ni dépasser 25 caractères max. et 3 caractères min. !")
             return false
         };
     }
@@ -261,7 +199,7 @@ sendConfirmation.addEventListener("click", (e) => {
         if (/^[A-Za-z]{3,25}$/.test(city)) {
             return true
         } else {
-            alert("Votre VILLE ne doit pas contenir de chiffres et/ou de symboles,\ne pas dépasser 25 caractères max et 3 caractères min !")
+            alert("Votre VILLE ne doit pas contenir de chiffres et/ou de symboles, ni dépasser 25 caractères max. et 3 caractères min. !")
             return false
         };
     }
@@ -315,7 +253,7 @@ sendConfirmation.addEventListener("click", (e) => {
                 localStorage.setItem("orderId", field.orderId);
                 window.location.href = "\confirmation.html";
             } else {
-                alert("Erreur : Problème serveur.");
+                alert("Commande non validée !");
             }
         } catch (e) {
             console.log(e);

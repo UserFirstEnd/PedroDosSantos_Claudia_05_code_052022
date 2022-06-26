@@ -47,7 +47,7 @@ function fillData(product) {
     select.appendChild(option);
   })
 
-  addProducts(product)
+  addProducts(product);
 }
 
 // Function to send chosen products to localStorage
