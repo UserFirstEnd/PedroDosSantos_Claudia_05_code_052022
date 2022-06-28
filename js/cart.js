@@ -2,20 +2,21 @@ const cart = JSON.parse(localStorage.getItem("product"));
 
 cart.forEach((addedProducts) => displayProduct(addedProducts));
 
-console.log(cart)
+
 //STRUCTURING OF HTML ELEMENTS ON CART.HTML////////////////////////////////////////////////////
-//Function with all elements to display
+
+// Creation of elements and their contents in the DOM
 function displayProduct(addedProducts) {
 
     console.log(addedProducts)
-    // Create article element
+    // Create the element article
     const product = document.createElement('article');
     product.classList.add("cart__item");
     product.dataset._id = addedProducts._id;
     product.dataset.colors = addedProducts.colors;
     document.querySelector("#cart__items").appendChild(product);
 
-    // Create img element
+    // Create the element for the img
     const img = document.createElement("img");
     img.src = addedProducts.imageUrl;
     img.alt = addedProducts.altTxt;
@@ -24,49 +25,49 @@ function displayProduct(addedProducts) {
     div.appendChild(img);
     product.appendChild(div);
 
-    // Create content element
+    // Create the element for the content
     const content = document.createElement("div");
     content.classList.add("cart__item__content");
     document.querySelector("#cart__items").appendChild(content);
     product.appendChild(content);
 
-    // Create description element
+    // Create the element for the description
     const description = document.createElement("div");
     description.classList.add("cart__item__content__description");
     content.appendChild(description);
 
-    // Create h2 = name element
+    // Create the element for the h2 = name element
     const h2 = document.createElement('h2');
     description.appendChild(h2);
     h2.textContent = addedProducts.name;
 
-    // Create p = color element
+    // Create the element for the p = color element
     const p = document.createElement('p');
     description.appendChild(p);
     p.textContent = addedProducts.colors;
 
-    // Create p = quantity element
+    // Create the element for the p = quantity element
     const p2 = document.createElement('p');
     description.appendChild(p2);
     p2.textContent = addedProducts.price + ' €';
 
-    // Create settings element
+    // Create the element for the settings
     const settings = document.createElement("div");
     settings.classList.add("cart__item__content__settings");
     document.querySelector("#cart__items").appendChild(settings);
     content.appendChild(settings);
 
-    // Create settings quantity element
+    // Create the element for settings quantity
     const settingsQuantity = document.createElement("div");
     settingsQuantity.classList.add("cart__item__content__settings__quantity");
     settings.appendChild(settingsQuantity);
 
-    // Create p settings quantity element
+    // Create the element for the p settings quantity
     const quantityP = document.createElement('p');
     settingsQuantity.appendChild(quantityP);
     quantityP.textContent = "Qté:";
 
-    // Create input settings quantity element
+    // Create the element for input settings quantity
     const input = document.createElement('input');
     input.type = "number";
     input.name = "itemQuantity";
@@ -77,12 +78,12 @@ function displayProduct(addedProducts) {
     input.dataset.colors = addedProducts.colors;
     settingsQuantity.appendChild(input);
 
-    // Create deleteItem element
+    // Create the element for deleteItem
     const deleteItem = document.createElement("div");
     deleteItem.classList.add("cart__item__content__settings__delete");
     settings.appendChild(deleteItem);
 
-    // Create deleteItem p element
+    // Create the element for the deleteItem p
     const deleteItemP = document.createElement('p');
     deleteItem.appendChild(deleteItemP);
     deleteItem.dataset._id = addedProducts._id;
@@ -97,13 +98,13 @@ function displayProduct(addedProducts) {
 
 // Functions to display new quantity and price added by the cart page (input)
 function quantity() {
-    // Create totalQuantity element + calculation
+    // Create the element for the totalQuantity + calculation
     const startQuantity = document.querySelector("#totalQuantity");
     const quantityProducts = cart.reduce((quantityProducts, addedProducts) => quantityProducts + addedProducts.quantity, 0);
     startQuantity.textContent = quantityProducts;
 };
 function price() {
-    // Create totalPrice element + calculation
+    // Create the element for the totalPrice + calculation
     const startPrice = document.querySelector("#totalPrice");
     const totalPriceQty = cart.reduce((totalPriceQty, addedProducts) => totalPriceQty + addedProducts.price * addedProducts.quantity, 0);
     startPrice.textContent = totalPriceQty;
@@ -119,7 +120,6 @@ function addQuantityProduct() {
     checkAddedProducts.forEach((updateQuantity) => {
         updateQuantity.addEventListener("click", () => {
             for (i = 0; i < cart.length; i++) {
-                //console.log("test le for");
                 if (cart[i]._id == updateQuantity.dataset._id && cart[i].colors == updateQuantity.dataset.colors) {
                     return (
                         cart[i].quantity = Number(updateQuantity.value),
@@ -137,7 +137,7 @@ function addQuantityProduct() {
 function takeProductFromStorage() {
 
     let deleteProducts = document.querySelectorAll(".cart__item__content__settings__delete");
-
+    
     // Event to delete article HTML and item from storage
     deleteProducts.forEach((deleteProduct) => {
         deleteProduct.addEventListener("click", () => {
@@ -162,8 +162,6 @@ function takeProductFromStorage() {
 // FORM CONTACT //////////////////////////////////////////////////////////
 const sendConfirmation = document.querySelector("#order");
 // Send confirmation
-let addedProducts = products = [];
-
 sendConfirmation.addEventListener("click", (e) => {
     e.preventDefault();
     // Get data field on form
@@ -174,7 +172,13 @@ sendConfirmation.addEventListener("click", (e) => {
         city: document.querySelector("#city").value,
         email: document.querySelector("#email").value
     }
+    // Get an array with a string of products id's
+    const products = [];
+    for (i = 0; i < cart.length; i++) {
+        let productsId = cart[i]._id;
+        products.push(productsId)
 
+    }
     //Functions to check data field on form with regEx
     function checkFirstName() {
         const firstName = contact.firstName;
@@ -182,7 +186,6 @@ sendConfirmation.addEventListener("click", (e) => {
             return true
         } else {
             alert("Votre PRENOM ne doit pas contenir de chiffres et/ou de symboles, ni dépasser 25 caractères max. et 3 caractères min. !")
-            return false
         };
     }
     function checkLastName() {
@@ -191,7 +194,6 @@ sendConfirmation.addEventListener("click", (e) => {
             return true
         } else {
             alert("Votre NOM ne doit pas contenir de chiffres et/ou de symboles, ni dépasser 25 caractères max. et 3 caractères min. !")
-            return false
         };
     }
     function checkCity() {
@@ -200,7 +202,6 @@ sendConfirmation.addEventListener("click", (e) => {
             return true
         } else {
             alert("Votre VILLE ne doit pas contenir de chiffres et/ou de symboles, ni dépasser 25 caractères max. et 3 caractères min. !")
-            return false
         };
     }
     function checkAddress() {
@@ -209,7 +210,6 @@ sendConfirmation.addEventListener("click", (e) => {
             return true
         } else {
             alert("Votre ADRESSE doit être valide !")
-            return false
         };
     }
     function checkEmail() {
@@ -218,10 +218,8 @@ sendConfirmation.addEventListener("click", (e) => {
             return true
         } else {
             alert("Votre EMAIL doit être valide !")
-            return false
         };
     }
-
     // If data form invalid, don't send data to localStorage
     if (checkFirstName(), checkLastName(), checkCity(), checkEmail(), checkAddress()) {
         // data on cache
@@ -234,17 +232,15 @@ sendConfirmation.addEventListener("click", (e) => {
         products,
         contact,
     }
-    console.log(contact)
     // Sending products and form contact to order page
     const confirmation = fetch('http://localhost:3000/api/products/order', {
         method: "POST",
         body: JSON.stringify(sendDataConfirmation),
         headers: {
             "Content-Type": "application/json",
-
         },
     });
-    console.log(confirmation);
+    //
     confirmation.then(async (response) => {
         try {
             const field = await response.json();

@@ -5,15 +5,14 @@ function getProductId() {
 }
 const id = getProductId();
 
-// Creating html for display product chosen
+// Creation of elements and their contents in the DOM
 fetch(`http://localhost:3000/api/products/${id}`)
   .then((response) => response.json())
   .then((res) => fillData(res))
 
-// Function to create elements
 function fillData(product) {
 
-  // Create img element
+  // Create the element for the img
   const imageUrl = product.imageUrl;
   const altTxt = product.altTxt;
   const image = document.createElement("img");
@@ -22,22 +21,22 @@ function fillData(product) {
   const parent = document.querySelector(".item__img");
   if (parent != null) parent.appendChild(image);
 
-  // Create name element
+  // Create the element for the name
   const name = product.name;
   const h1 = document.querySelector("#title");
   if (h1 != null) h1.textContent = name;
 
-  // Create price element
+  // Create the element for the price
   const price = product.price;
   const span = document.querySelector("#price");
   if (span != null) span.textContent = price;
 
-  // Create description element
+  // Create the element for the description
   const description = product.description;
   const p = document.querySelector("#description");
   if (p != null) p.textContent = description;
 
-  // Create colors element
+  // Create the element for the colors
   const color = product.colors;
   const select = document.querySelector("#colors");
   color.forEach((colors) => {
@@ -52,7 +51,6 @@ function fillData(product) {
 
 // Function to send chosen products to localStorage
 function addProducts(product) {
-  console.log("bonjour")
   const button = document.querySelector("#addToCart");
   button.addEventListener("click", (e) => {
     e.preventDefault();
