@@ -132,7 +132,7 @@ main {
 	flex-wrap: wrap;
 }
 .items a {
-	width: 50%;
+	width: 40%;
 	text-decoration: none;
 	color: unset;
 }

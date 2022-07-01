@@ -2,7 +2,6 @@ const cart = JSON.parse(localStorage.getItem("product"));
 
 cart.forEach((addedProducts) => displayProduct(addedProducts));
 
-
 //STRUCTURING OF HTML ELEMENTS ON CART.HTML////////////////////////////////////////////////////
 
 // Creation of elements and their contents in the DOM
@@ -137,7 +136,7 @@ function addQuantityProduct() {
 function takeProductFromStorage() {
 
     let deleteProducts = document.querySelectorAll(".cart__item__content__settings__delete");
-    
+
     // Event to delete article HTML and item from storage
     deleteProducts.forEach((deleteProduct) => {
         deleteProduct.addEventListener("click", () => {
@@ -249,7 +248,7 @@ sendConfirmation.addEventListener("click", (e) => {
                 localStorage.setItem("orderId", field.orderId);
                 window.location.href = "\confirmation.html";
             } else {
-                alert("Commande non validée !");
+                alert("Erreur serveur !");
             }
         } catch (e) {
             console.log(e);

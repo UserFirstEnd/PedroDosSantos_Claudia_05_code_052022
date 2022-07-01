@@ -11,7 +11,7 @@ fetch("http://localhost:3000/api/products")
     .then(jsonListProducts => {
         for(let jsonProducts of jsonListProducts){
             let products = new Products(jsonProducts);
-            document.querySelector(".items").innerHTML += `<section class="items" id="items"> 
+            document.querySelector(".items").innerHTML += ` 
             <a href="./product.html?id=${products._id}">
                 <article>
                     <img src="${products.imageUrl}" alt="${products.altTxt}">
@@ -19,7 +19,6 @@ fetch("http://localhost:3000/api/products")
                     <p class="productDescription">${products.description}</p>
                 </article>
             </a>
-        </section>
         `
     }
 });
