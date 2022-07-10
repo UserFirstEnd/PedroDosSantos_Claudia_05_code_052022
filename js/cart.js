@@ -1,13 +1,26 @@
-const cart = JSON.parse(localStorage.getItem("product"));
+// variable to store the products present in the localStorage
+const cart = JSON.parse(localStorage.getItem("products"));
 
+// if cart is empty, alert and returns to the homepage
+if (!cart) {
+    alert("Votre panier est vide !")
+    window.location.href = "index.html";
+};
+
+/*function deleteNonN() {
+    for (i = 0; i < cart.length; i++) {
+       return (delete (cart[i].price));
+    }
+}
+deleteNonN();*/
+
+// for each product in the localStorage, display it in the cart page
 cart.forEach((addedProducts) => displayProduct(addedProducts));
 
 //STRUCTURING OF HTML ELEMENTS ON CART.HTML////////////////////////////////////////////////////
-
 // Creation of elements and their contents in the DOM
 function displayProduct(addedProducts) {
 
-    console.log(addedProducts)
     // Create the element article
     const product = document.createElement('article');
     product.classList.add("cart__item");
@@ -115,14 +128,17 @@ function addQuantityProduct() {
 
     let checkAddedProducts = document.querySelectorAll("article input");
 
-    //Event to add and remove quantity
+    // for each products in localStorage
     checkAddedProducts.forEach((updateQuantity) => {
+        //Event to add and remove quantity 
         updateQuantity.addEventListener("click", () => {
             for (i = 0; i < cart.length; i++) {
+                // checks from dataset, if the product to which we add a quantity is already in the localStorage with the same id and the same color, if yes add the quantity to this product
                 if (cart[i]._id == updateQuantity.dataset._id && cart[i].colors == updateQuantity.dataset.colors) {
                     return (
                         cart[i].quantity = Number(updateQuantity.value),
-                        localStorage.setItem("product", JSON.stringify(cart)),
+                        localStorage.setItem("products", JSON.stringify(cart)),
+                        // update total price and quantity
                         quantity(),
                         price()
                     );
@@ -137,8 +153,9 @@ function takeProductFromStorage() {
 
     let deleteProducts = document.querySelectorAll(".cart__item__content__settings__delete");
 
-    // Event to delete article HTML and item from storage
+    // for each products in localStorage
     deleteProducts.forEach((deleteProduct) => {
+        // Event to delete article HTML and item from storage
         deleteProduct.addEventListener("click", () => {
             const tagOfTheSelected = deleteProduct.closest('article');
             tagOfTheSelected.remove();
@@ -146,12 +163,12 @@ function takeProductFromStorage() {
             let allProductsRemoved = cart.length;
 
             if (allProductsRemoved == 1) {
-                localStorage.removeItem("product");
+                localStorage.removeItem("products");
                 alert("Votre panier sera vide ! Veuillez sélectionner un produit.");
                 window.location.href = "index.html";
             } else {
                 let someProducts = cart.filter(el => el._id != deleteProduct.dataset._id || el.colors != deleteProduct.dataset.colors);
-                localStorage.setItem("product", JSON.stringify(someProducts));
+                localStorage.setItem("products", JSON.stringify(someProducts));
                 location.reload();
             };
         });
@@ -200,7 +217,7 @@ sendConfirmation.addEventListener("click", (e) => {
         if (/^[A-Za-z]{3,25}$/.test(city)) {
             return true
         } else {
-            alert("Votre VILLE ne doit pas contenir de chiffres et/ou de symboles, ni dépasser 25 caractères max. et 3 caractères min. !")
+            alert("Votre VILLE ne doit pas contenir de chiffres et/ou de symboles, ni dépasser 25 caractères max. et 3 caractères min. !")
         };
     }
     function checkAddress() {
@@ -246,7 +263,7 @@ sendConfirmation.addEventListener("click", (e) => {
             console.log(field);
             if (response.ok) {
                 localStorage.setItem("orderId", field.orderId);
-                window.location.href = "\confirmation.html";
+                window.location.href = `\confirmation.html?orderId=${field.orderId}`;
             } else {
                 alert("Erreur serveur !");
             }
@@ -254,13 +271,13 @@ sendConfirmation.addEventListener("click", (e) => {
             console.log(e);
         }
     });
-    //Do not keep on localStorage the contact
-    function takeContactFromStorage(key) {
-        localStorage.removeItem(key);
-    };
     takeContactFromStorage("contact");
 });
 
+//Do not keep on localStorage the contact
+function takeContactFromStorage(key) {
+    localStorage.removeItem(key);
+};
 
 
 

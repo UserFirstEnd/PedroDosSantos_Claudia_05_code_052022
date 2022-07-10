@@ -11,7 +11,7 @@ fetch(`http://localhost:3000/api/products/${id}`)
   .then((res) => fillData(res))
 
 function fillData(product) {
-
+console.log(product)
   // Create the element for the img
   const imageUrl = product.imageUrl;
   const altTxt = product.altTxt;
@@ -56,54 +56,59 @@ function addProducts(product) {
     e.preventDefault();
     const colors = document.querySelector("#colors").value;
     const quantity = document.querySelector("#quantity").value;
+    // if a color or quantity has not been chosen, alert
     if (colors == null || colors === "" || quantity == null || quantity == 0) {
       alert("Please select a color and quantity");
       //
       return
     }
-
-    //
+    // variable to store colors
     const managesSeveralColors = Object.assign({}, product, {
       colors: colors,
       quantity: Number(quantity),
     });
-    console.log(managesSeveralColors)
-
-    //
-    let productsAdded = JSON.parse(localStorage.getItem("product"));
-    //
+    // Send the value associated with the "products" key / parse the JSON string and build the JavaScript value
+    let productsAdded = JSON.parse(localStorage.getItem("products"));
+    // if no product on storage send a table and setItem on storage, with the chosen product + the color
     if (productsAdded == null) {
       productsAdded = [];
       productsAdded.push(managesSeveralColors);
-      localStorage.setItem("product", JSON.stringify(productsAdded));
+      localStorage.setItem("products", JSON.stringify(productsAdded));
+      // else if we already have products in localStorage
     } else if (productsAdded != null) {
+      // browse the products
       for (i = 0; i < productsAdded.length; i++) {
+        // if we already have in localStorage a product with the same id and same color
         if (productsAdded[i]._id == product._id && productsAdded[i].colors == colors) {
+          // add 1 for this product
           return (
             productsAdded[i].quantity += Number(quantity),
-            localStorage.setItem("product", JSON.stringify(productsAdded)),
-            productsAdded = JSON.parse(localStorage.getItem("product")),
+            localStorage.setItem("products", JSON.stringify(productsAdded)),
+            productsAdded = JSON.parse(localStorage.getItem("products")),
             // window.location.href to send us to url cart when "click" on button
             window.location.href = "cart.html"
           );
         }
       }
+      // browse the products
       for (i = 0; i < productsAdded.length; i++) {
+        // if we already have the same id in localStorage, but the color is different or the id is different
         if (productsAdded[i]._id == product._id && productsAdded[i].colors != colors || productsAdded[i]._id != product._id) {
+          // add a new product to localStorageretourne 
           return (
             productsAdded.push(managesSeveralColors),
-            localStorage.setItem("product", JSON.stringify(productsAdded)),
-            (productsAdded = JSON.parse(localStorage.getItem("product"))),
+            localStorage.setItem("products", JSON.stringify(productsAdded)),
+            (productsAdded = JSON.parse(localStorage.getItem("products"))),
             // window.location.href to send us to url cart when "click" on button
             window.location.href = "cart.html"
           );
         }
       }
     }
-
-    return productsAdded = JSON.parse(localStorage.getItem("product")),
-    // window.location.href to send us to url cart when "click" on button
-    window.location.href = "cart.html"
+    // return the parsed product key
+    return productsAdded = JSON.parse(localStorage.getItem("products")),
+      // window.location.href to send us to url cart when "click" on button
+      window.location.href = "cart.html"
   });
 }
 

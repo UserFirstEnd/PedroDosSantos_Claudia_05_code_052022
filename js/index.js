@@ -1,5 +1,5 @@
-//Retrieving all products
-class Products {
+//Retrieve all products
+class allProducts {
     constructor(jsonProducts) {
       jsonProducts && Object.assign(this, jsonProducts);
     }
@@ -10,7 +10,7 @@ fetch("http://localhost:3000/api/products")
     .then(data => data.json())
     .then(jsonListProducts => {
         for(let jsonProducts of jsonListProducts){
-            let products = new Products(jsonProducts);
+            let products = new allProducts(jsonProducts);
             document.querySelector(".items").innerHTML += ` 
             <a href="./product.html?id=${products._id}">
                 <article>

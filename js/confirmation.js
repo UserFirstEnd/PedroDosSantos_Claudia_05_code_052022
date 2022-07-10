@@ -1,6 +1,6 @@
-//Take the orderId form localStorage
-const orderId = localStorage.getItem("orderId");
-console.log(`orderId : ${orderId}`);
+// location.search to retrieve the url order id parameter
+const urlParams = new URLSearchParams(location.search);
+const orderId = urlParams.get("orderId");
 
 //Selecting element on the DOM to display id on confirmation window (HTML)
 const confirmationId = document.querySelector("#limitedWidthBlock")
