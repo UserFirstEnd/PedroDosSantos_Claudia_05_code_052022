@@ -1,4 +1,4 @@
-// location.search to retrieve the url id parameter
+// location.search and URLSearchParams to retrieve the url id parameter
 function getProductId() {
   const urlParams = new URLSearchParams(location.search);
   return urlParams.get("id");
@@ -10,8 +10,9 @@ fetch(`http://localhost:3000/api/products/${id}`)
   .then((response) => response.json())
   .then((res) => fillData(res))
 
+// Function to display the chosen product from the home page
 function fillData(product) {
-console.log(product)
+
   // Create the element for the img
   const imageUrl = product.imageUrl;
   const altTxt = product.altTxt;
@@ -67,6 +68,7 @@ function addProducts(product) {
       colors: colors,
       quantity: Number(quantity),
     });
+    console.log(managesSeveralColors)
     // Send the value associated with the "products" key / parse the JSON string and build the JavaScript value
     let productsAdded = JSON.parse(localStorage.getItem("products"));
     // if no product on storage send a table and setItem on storage, with the chosen product + the color
@@ -105,10 +107,9 @@ function addProducts(product) {
         }
       }
     }
-    // return the parsed product key
-    return productsAdded = JSON.parse(localStorage.getItem("products")),
-      // window.location.href to send us to url cart when "click" on button
-      window.location.href = "cart.html"
+    productsAdded = JSON.parse(localStorage.getItem("products")),
+    // window.location.href to send us to url cart when "click" on button
+    window.location.href = "cart.html"
   });
 }
 

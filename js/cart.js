@@ -6,32 +6,51 @@ if (!cart) {
     alert("Votre panier est vide !")
     window.location.href = "index.html";
 };
-
-/*function deleteNonN() {
-    for (i = 0; i < cart.length; i++) {
-       return (delete (cart[i].price));
-    }
-}
-deleteNonN();*/
-
 // for each product in the localStorage, display it in the cart page
-cart.forEach((addedProducts) => displayProduct(addedProducts));
+cart.forEach((addedProduct) => displayProduct(addedProduct));
+
+// Function to delete price from localStorage
+function deleteNonN() {
+    for (i = 0; i < cart.length; i++) {
+        delete cart[i].price
+    }
+    localStorage.setItem("products", JSON.stringify(cart))
+}
+deleteNonN();
 
 //STRUCTURING OF HTML ELEMENTS ON CART.HTML////////////////////////////////////////////////////
 // Creation of elements and their contents in the DOM
-function displayProduct(addedProducts) {
+
+// Function to display each products
+function displayProduct(addedProduct) {
+
+    // Fetch to get price
+    fetch("http://localhost:3000/api/products/" + addedProduct._id)
+        .then(response => response.json())
+        .then(async function (dataProductFromAPI) {
+            dataProduct = await dataProductFromAPI;
+
+            // Create the p price element
+            const p2 = document.createElement('p');
+            description.appendChild(p2);
+            p2.textContent = `${dataProductFromAPI.price}` + ' €';
+
+            addedProduct.price = Number(`${dataProduct.price}`);
+            console.log(addedProduct.price)
+            price();
+        });
 
     // Create the element article
     const product = document.createElement('article');
     product.classList.add("cart__item");
-    product.dataset._id = addedProducts._id;
-    product.dataset.colors = addedProducts.colors;
+    product.dataset._id = addedProduct._id;
+    product.dataset.colors = addedProduct.colors;
     document.querySelector("#cart__items").appendChild(product);
 
     // Create the element for the img
     const img = document.createElement("img");
-    img.src = addedProducts.imageUrl;
-    img.alt = addedProducts.altTxt;
+    img.src = addedProduct.imageUrl;
+    img.alt = addedProduct.altTxt;
     const div = document.createElement("div");
     div.classList.add("cart__item__img");
     div.appendChild(img);
@@ -51,17 +70,12 @@ function displayProduct(addedProducts) {
     // Create the element for the h2 = name element
     const h2 = document.createElement('h2');
     description.appendChild(h2);
-    h2.textContent = addedProducts.name;
+    h2.textContent = addedProduct.name;
 
     // Create the element for the p = color element
     const p = document.createElement('p');
     description.appendChild(p);
-    p.textContent = addedProducts.colors;
-
-    // Create the element for the p = quantity element
-    const p2 = document.createElement('p');
-    description.appendChild(p2);
-    p2.textContent = addedProducts.price + ' €';
+    p.textContent = addedProduct.colors;
 
     // Create the element for the settings
     const settings = document.createElement("div");
@@ -85,9 +99,9 @@ function displayProduct(addedProducts) {
     input.name = "itemQuantity";
     input.min = "1";
     input.max = "100";
-    input.value = addedProducts.quantity;
-    input.dataset._id = addedProducts._id;
-    input.dataset.colors = addedProducts.colors;
+    input.value = addedProduct.quantity;
+    input.dataset._id = addedProduct._id;
+    input.dataset.colors = addedProduct.colors;
     settingsQuantity.appendChild(input);
 
     // Create the element for deleteItem
@@ -98,31 +112,30 @@ function displayProduct(addedProducts) {
     // Create the element for the deleteItem p
     const deleteItemP = document.createElement('p');
     deleteItem.appendChild(deleteItemP);
-    deleteItem.dataset._id = addedProducts._id;
-    deleteItem.dataset.colors = addedProducts.colors;
+    deleteItem.dataset._id = addedProduct._id;
+    deleteItem.dataset.colors = addedProduct.colors;
     deleteItemP.textContent = "Supprimer";
 
-    price();
     quantity();
     takeProductFromStorage();
     addQuantityProduct();
+
+    console.log(addedProduct)
 }
 
-// Functions to display new quantity and price added by the cart page (input)
+// Functions to display new quantity and price on the DOM, added by the cart page (input)
 function quantity() {
     // Create the element for the totalQuantity + calculation
-    const startQuantity = document.querySelector("#totalQuantity");
-    const quantityProducts = cart.reduce((quantityProducts, addedProducts) => quantityProducts + addedProducts.quantity, 0);
-    startQuantity.textContent = quantityProducts;
+    const quantity = document.querySelector("#totalQuantity");
+    const quantityProducts = cart.reduce((quantityProducts, addedProduct) => quantityProducts + addedProduct.quantity, 0);
+    quantity.textContent = quantityProducts;
 };
 function price() {
     // Create the element for the totalPrice + calculation
-    const startPrice = document.querySelector("#totalPrice");
-    const totalPriceQty = cart.reduce((totalPriceQty, addedProducts) => totalPriceQty + addedProducts.price * addedProducts.quantity, 0);
-    startPrice.textContent = totalPriceQty;
-    console.log(totalPriceQty)
-};
-
+    const price = document.querySelector("#totalPrice");
+    const totalPriceQty = cart.reduce((totalPriceQty, addedProduct) => totalPriceQty + addedProduct.price * addedProduct.quantity, 0);
+    price.textContent = totalPriceQty;
+}
 //Function to add and remove quantity
 function addQuantityProduct() {
 
@@ -131,16 +144,20 @@ function addQuantityProduct() {
     // for each products in localStorage
     checkAddedProducts.forEach((updateQuantity) => {
         //Event to add and remove quantity 
-        updateQuantity.addEventListener("click", () => {
+        updateQuantity.addEventListener("click", (e) => {
+            e.preventDefault();
             for (i = 0; i < cart.length; i++) {
                 // checks from dataset, if the product to which we add a quantity is already in the localStorage with the same id and the same color, if yes add the quantity to this product
-                if (cart[i]._id == updateQuantity.dataset._id && cart[i].colors == updateQuantity.dataset.colors) {
+                if (cart[i]._id == updateQuantity.dataset._id && cart[i].colors == updateQuantity.dataset.colors && cart[i]._id == updateQuantity.dataset._id && cart[i].colors == updateQuantity.dataset.colors) {
                     return (
                         cart[i].quantity = Number(updateQuantity.value),
                         localStorage.setItem("products", JSON.stringify(cart)),
                         // update total price and quantity
                         quantity(),
-                        price()
+                        price(),
+                        // Function to delete price from localStorage
+                        deleteNonN(),
+                        window.location.reload()
                     );
                 };
             };
@@ -156,9 +173,11 @@ function takeProductFromStorage() {
     // for each products in localStorage
     deleteProducts.forEach((deleteProduct) => {
         // Event to delete article HTML and item from storage
-        deleteProduct.addEventListener("click", () => {
-            const tagOfTheSelected = deleteProduct.closest('article');
-            tagOfTheSelected.remove();
+        deleteProduct.addEventListener("click", (e) => {
+            e.preventDefault();
+
+            const selectedProduct = deleteProduct.closest('article');
+            selectedProduct.remove();
 
             let allProductsRemoved = cart.length;
 
@@ -167,8 +186,8 @@ function takeProductFromStorage() {
                 alert("Votre panier sera vide ! Veuillez sélectionner un produit.");
                 window.location.href = "index.html";
             } else {
-                let someProducts = cart.filter(el => el._id != deleteProduct.dataset._id || el.colors != deleteProduct.dataset.colors);
-                localStorage.setItem("products", JSON.stringify(someProducts));
+                let newCartProducts = cart.filter(el => el._id != deleteProduct.dataset._id || el.colors != deleteProduct.dataset.colors);
+                localStorage.setItem("products", JSON.stringify(newCartProducts));
                 location.reload();
             };
         });
@@ -198,42 +217,52 @@ sendConfirmation.addEventListener("click", (e) => {
     //Functions to check data field on form with regEx
     function checkFirstName() {
         const firstName = contact.firstName;
+        const getFirstNameMessageError = document.querySelector("#firstNameErrorMsg");
         if (/^[A-Za-z]{3,25}$/.test(firstName)) {
             return true
         } else {
-            alert("Votre PRENOM ne doit pas contenir de chiffres et/ou de symboles, ni dépasser 25 caractères max. et 3 caractères min. !")
+            getFirstNameMessageError.innerHTML = "Votre PRENOM ne doit pas contenir de chiffres et/ou de symboles, ni dépasser 25 caractères max. et 3 caractères min. !";
+            return innerHTML
         };
     }
     function checkLastName() {
         const lastName = contact.lastName;
+        const getLastNameMessageError = document.querySelector("#lastNameErrorMsg");
         if (/^[A-Za-z]{3,25}$/.test(lastName)) {
             return true
         } else {
-            alert("Votre NOM ne doit pas contenir de chiffres et/ou de symboles, ni dépasser 25 caractères max. et 3 caractères min. !")
+            getLastNameMessageError.innerHTML = "Votre NOM ne doit pas contenir de chiffres et/ou de symboles, ni dépasser 25 caractères max. et 3 caractères min. !";
+            return innerHTML
         };
     }
     function checkCity() {
         const city = contact.city;
+        const getCityMessageError = document.querySelector("#cityErrorMsg");
         if (/^[A-Za-z]{3,25}$/.test(city)) {
             return true
         } else {
-            alert("Votre VILLE ne doit pas contenir de chiffres et/ou de symboles, ni dépasser 25 caractères max. et 3 caractères min. !")
+            getCityMessageError.innerHTML = "Votre VILLE ne doit pas contenir de chiffres et/ou de symboles, ni dépasser 25 caractères max. et 3 caractères min. !";
+            return innerHTML
         };
     }
     function checkAddress() {
         const address = contact.address;
+        const getAddressMessageError = document.querySelector("#addressErrorMsg");
         if (/^[a-zA-Z0-9\s,'-]*$/.test(address)) {
             return true
         } else {
-            alert("Votre ADRESSE doit être valide !")
+            getAddressMessageError.innerHTML = "Votre ADRESSE doit être valide !";
+            return innerHTML
         };
     }
     function checkEmail() {
         const email = contact.email;
+        const getEmailMessageError = document.querySelector("#emailErrorMsg");
         if (/^[\w-\.]+@([\w-]+\.)+[\w-]{1,8}$/.test(email)) {
             return true
         } else {
-            alert("Votre EMAIL doit être valide !")
+            getEmailMessageError.innerHTML = "Votre EMAIL doit être valide !";
+            return innerHTML
         };
     }
     // If data form invalid, don't send data to localStorage
@@ -256,7 +285,7 @@ sendConfirmation.addEventListener("click", (e) => {
             "Content-Type": "application/json",
         },
     });
-    //
+    // Send the order ID to localStorage and add the order ID number to the URL page confirmation address
     confirmation.then(async (response) => {
         try {
             const field = await response.json();
@@ -274,12 +303,10 @@ sendConfirmation.addEventListener("click", (e) => {
     takeContactFromStorage("contact");
 });
 
-//Do not keep on localStorage the contact
+// Function to not keep on localStorage the contact
 function takeContactFromStorage(key) {
     localStorage.removeItem(key);
 };
-
-
 
 
 

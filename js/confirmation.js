@@ -13,9 +13,8 @@ const confirmationWindowId = `<div class="confirmation">
 //Injecting HTML
 confirmationId.insertAdjacentHTML("afterbegin", confirmationWindowId);
 
-//Do not keep on localStorage the id order and products
+// Function to not keep on localStorage the id order and products
 function takeIdFromStorage(key) {
     localStorage.removeItem(key);
 };
-
 takeIdFromStorage("orderId");
