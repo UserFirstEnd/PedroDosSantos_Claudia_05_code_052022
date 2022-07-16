@@ -1,11 +1,11 @@
-//Retrieve all products
+// Collect all products
 class allProducts {
     constructor(jsonProducts) {
       jsonProducts && Object.assign(this, jsonProducts);
     }
   }
   
-//manages the display and interactions of the home page
+// manages the display and interactions of the home page
 fetch("http://localhost:3000/api/products")
     .then(data => data.json())
     .then(jsonListProducts => {

@@ -68,7 +68,7 @@ function addProducts(product) {
       colors: colors,
       quantity: Number(quantity),
     });
-    console.log(managesSeveralColors)
+    
     // Send the value associated with the "products" key / parse the JSON string and build the JavaScript value
     let productsAdded = JSON.parse(localStorage.getItem("products"));
     // if no product on storage send a table and setItem on storage, with the chosen product + the color
@@ -108,7 +108,6 @@ function addProducts(product) {
       }
     }
     productsAdded = JSON.parse(localStorage.getItem("products")),
-    // window.location.href to send us to url cart when "click" on button
     window.location.href = "cart.html"
   });
 }

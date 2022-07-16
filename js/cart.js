@@ -6,6 +6,7 @@ if (!cart) {
     alert("Votre panier est vide !")
     window.location.href = "index.html";
 };
+
 // for each product in the localStorage, display it in the cart page
 cart.forEach((addedProduct) => displayProduct(addedProduct));
 
@@ -36,7 +37,7 @@ function displayProduct(addedProduct) {
             p2.textContent = `${dataProductFromAPI.price}` + ' €';
 
             addedProduct.price = Number(`${dataProduct.price}`);
-            console.log(addedProduct.price)
+            
             price();
         });
 
@@ -119,28 +120,28 @@ function displayProduct(addedProduct) {
     quantity();
     takeProductFromStorage();
     addQuantityProduct();
-
-    console.log(addedProduct)
 }
 
-// Functions to display new quantity and price on the DOM, added by the cart page (input)
+// Functions to display new quantity on the DOM, added by the cart page (input)
 function quantity() {
     // Create the element for the totalQuantity + calculation
     const quantity = document.querySelector("#totalQuantity");
     const quantityProducts = cart.reduce((quantityProducts, addedProduct) => quantityProducts + addedProduct.quantity, 0);
     quantity.textContent = quantityProducts;
 };
+
+// Functions to display new price on the DOM, added by the cart page (input)
 function price() {
     // Create the element for the totalPrice + calculation
     const price = document.querySelector("#totalPrice");
     const totalPriceQty = cart.reduce((totalPriceQty, addedProduct) => totalPriceQty + addedProduct.price * addedProduct.quantity, 0);
     price.textContent = totalPriceQty;
 }
+
 //Function to add and remove quantity
 function addQuantityProduct() {
 
     let checkAddedProducts = document.querySelectorAll("article input");
-
     // for each products in localStorage
     checkAddedProducts.forEach((updateQuantity) => {
         //Event to add and remove quantity 
@@ -155,7 +156,7 @@ function addQuantityProduct() {
                         // update total price and quantity
                         quantity(),
                         price(),
-                        // Function to delete price from localStorage
+                        // delete price from localStorage
                         deleteNonN(),
                         window.location.reload()
                     );
@@ -168,6 +169,7 @@ function addQuantityProduct() {
 // Function to delete article HTML and item from storage
 function takeProductFromStorage() {
 
+    // Create the element for delete
     let deleteProducts = document.querySelectorAll(".cart__item__content__settings__delete");
 
     // for each products in localStorage
@@ -180,15 +182,16 @@ function takeProductFromStorage() {
             selectedProduct.remove();
 
             let allProductsRemoved = cart.length;
-
+            // if we remove the last product from the cart
             if (allProductsRemoved == 1) {
                 localStorage.removeItem("products");
                 alert("Votre panier sera vide ! Veuillez sélectionner un produit.");
                 window.location.href = "index.html";
+                // else, filter the products in the cart and delete only the selected one
             } else {
                 let newCartProducts = cart.filter(el => el._id != deleteProduct.dataset._id || el.colors != deleteProduct.dataset.colors);
                 localStorage.setItem("products", JSON.stringify(newCartProducts));
-                location.reload();
+                window.location.reload();
             };
         });
     })
@@ -199,7 +202,8 @@ const sendConfirmation = document.querySelector("#order");
 // Send confirmation
 sendConfirmation.addEventListener("click", (e) => {
     e.preventDefault();
-    // Get data field on form
+
+    // data field on form
     const contact = {
         firstName: document.querySelector("#firstName").value,
         lastName: document.querySelector("#lastName").value,
@@ -207,14 +211,8 @@ sendConfirmation.addEventListener("click", (e) => {
         city: document.querySelector("#city").value,
         email: document.querySelector("#email").value
     }
-    // Get an array with a string of products id's
-    const products = [];
-    for (i = 0; i < cart.length; i++) {
-        let productsId = cart[i]._id;
-        products.push(productsId)
-
-    }
-    //Functions to check data field on form with regEx
+    
+    // Function to check the filled first name, with regEx
     function checkFirstName() {
         const firstName = contact.firstName;
         const getFirstNameMessageError = document.querySelector("#firstNameErrorMsg");
@@ -225,6 +223,7 @@ sendConfirmation.addEventListener("click", (e) => {
             return innerHTML
         };
     }
+    // Function to check the filled last name, with regEx
     function checkLastName() {
         const lastName = contact.lastName;
         const getLastNameMessageError = document.querySelector("#lastNameErrorMsg");
@@ -235,6 +234,7 @@ sendConfirmation.addEventListener("click", (e) => {
             return innerHTML
         };
     }
+    // Function to check the filled city, with regEx
     function checkCity() {
         const city = contact.city;
         const getCityMessageError = document.querySelector("#cityErrorMsg");
@@ -245,6 +245,7 @@ sendConfirmation.addEventListener("click", (e) => {
             return innerHTML
         };
     }
+    // Function to check the filled address, with regEx
     function checkAddress() {
         const address = contact.address;
         const getAddressMessageError = document.querySelector("#addressErrorMsg");
@@ -255,6 +256,7 @@ sendConfirmation.addEventListener("click", (e) => {
             return innerHTML
         };
     }
+    // Function to check the filled email, with regEx
     function checkEmail() {
         const email = contact.email;
         const getEmailMessageError = document.querySelector("#emailErrorMsg");
@@ -267,10 +269,18 @@ sendConfirmation.addEventListener("click", (e) => {
     }
     // If data form invalid, don't send data to localStorage
     if (checkFirstName(), checkLastName(), checkCity(), checkEmail(), checkAddress()) {
-        // data on cache
+        // set data on cache
         localStorage.setItem("contact", JSON.stringify(contact));
     } else {
         alert("Entrée invalide. Vérifiez s'il vous plaît !");
+    }
+
+    // Get an array with a string of products id's
+    const products = [];
+    for (i = 0; i < cart.length; i++) {
+        let productsId = cart[i]._id;
+        products.push(productsId)
+
     }
     // Define the contact object and the products array
     const sendDataConfirmation = {
@@ -289,7 +299,6 @@ sendConfirmation.addEventListener("click", (e) => {
     confirmation.then(async (response) => {
         try {
             const field = await response.json();
-            console.log(field);
             if (response.ok) {
                 localStorage.setItem("orderId", field.orderId);
                 window.location.href = `\confirmation.html?orderId=${field.orderId}`;
